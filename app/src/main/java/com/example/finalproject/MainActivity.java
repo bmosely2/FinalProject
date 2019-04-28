@@ -18,7 +18,7 @@ import android.widget.TextView;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONArray;
-
+import com.example.finalproject.InfoFinder;
 
 public final class MainActivity extends AppCompatActivity {
 
@@ -38,7 +38,8 @@ public final class MainActivity extends AppCompatActivity {
         button.setOnClickListener(v -> {
             final EditText inputCountry = findViewById(R.id.CountryInput);
             final EditText inputDate = findViewById(R.id.DateInput);
-            String inputCombined = inputCountry.getText().toString() + inputDate.getText().toString();
+            String inputCountryString = inputCountry.getText().toString();
+            String inputDateString = inputDate.getText().toString();
             StartAPICall();
         });
 
@@ -53,7 +54,7 @@ public final class MainActivity extends AppCompatActivity {
         try {
             JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
                     Request.Method.GET,
-                    "https://date.nager.at/api/v2/publicholidays/2017/US", //+ "year/" + "countryCode/" + "/json"//,
+                    "https://date.nager.at/api/v2/publicholidays/" + InfoFinder.getCode() + InfoFinder.getDate(),
                     null,
                     new Response.Listener<JSONArray>() {
                         @Override

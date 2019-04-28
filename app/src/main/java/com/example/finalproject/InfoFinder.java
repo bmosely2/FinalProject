@@ -13,30 +13,23 @@ import java.util.Date;
 public class InfoFinder {
     public InfoFinder() {
     }
-    public static Date getDate(String json) {
+    public static int getDate(String json) {
         if (json != null) {
             JsonParser parser = new JsonParser();
             JsonObject result = parser.parse(json).getAsJsonObject();
-            if (result.has("date")) {
-                try {
-                    String date = result.getAsJsonObject("date").getAsString();
-                    Date dateNew = new SimpleDateFormat("yyyy").parse(date);
-                    return dateNew;
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-            }
+            JsonObject paths = result.getAsJsonObject("paths");
+            JsonArray parameters = paths.getAsJsonArray("parameters");
+            return parameters.get(1).getAsJsonObject().getAsJsonPrimitive("name").getAsInt();
         }
-        return null;
+        return 0;
     }
     public static String getCode(String json) {
         if (json != null) {
             JsonParser parser = new JsonParser();
             JsonObject result = parser.parse(json).getAsJsonObject();
-            if (result.has("countryCode")) {
-                String code = result.getAsJsonObject("countryCode").getAsString();
-                return code;
-            }
+            JsonObject paths = result.getAsJsonObject("paths");
+            JsonArray parameters = paths.getAsJsonArray("parameters");
+            return parameters.get(0).getAsJsonObject().getAsJsonPrimitive("name").getAsString();
         }
         return null;
     }
