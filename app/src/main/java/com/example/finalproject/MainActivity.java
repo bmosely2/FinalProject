@@ -1,5 +1,6 @@
 package com.example.finalproject;
 
+import android.icu.text.IDNA;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,13 +19,36 @@ import android.widget.TextView;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONArray;
-import com.example.finalproject.InfoFinder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import java.sql.SQLOutput;
 
 public final class MainActivity extends AppCompatActivity {
 
     private static final String Tag = "FinalProject:Main";
     private static RequestQueue requestQueue;
     private String request;
+
+    public boolean parseHelp(String request, String country, int date) {
+        if (request != null) {
+            JsonParser parser = new JsonParser();
+            JsonArray array = parser.parse(request).getAsJsonArray();
+
+            for(int i = 0; i < array.size(); i++) {
+                if (array.get(i).getAsJsonObject().getAsJsonPrimitive("countryCode").getAsString().equals(country)) {
+                    String[] first = array.get(i).getAsJsonObject().getAsJsonPrimitive("date").getAsString().trim().split("-");
+                    for (int j = 0; j < first.length; j++) {
+                        if (Integer.parseInt(first[i]) == date) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
 
 
     @Override
@@ -40,7 +64,9 @@ public final class MainActivity extends AppCompatActivity {
             final EditText inputDate = findViewById(R.id.DateInput);
             String inputCountryString = inputCountry.getText().toString();
             String inputDateString = inputDate.getText().toString();
-            StartAPICall();
+            int dateInt = Integer.parseInt(inputDateString);
+            StartAPICall(inputCountryString, inputDateString);
+            parseHelp(request, inputCountryString, dateInt);
         });
 
 
@@ -50,11 +76,11 @@ public final class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
     }
-    void StartAPICall() {
+    void StartAPICall(final String inputCode, final String inputDate) {
         try {
             JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
                     Request.Method.GET,
-                    "https://date.nager.at/api/v2/publicholidays/" + InfoFinder.getCode() + InfoFinder.getDate(),
+                    "https://date.nager.at/api/v2/publicholidays/" + inputDate + "/" + inputCode,
                     null,
                     new Response.Listener<JSONArray>() {
                         @Override
@@ -72,20 +98,24 @@ public final class MainActivity extends AppCompatActivity {
             jsonArrayRequest.setShouldCache(false);
             requestQueue.add(jsonArrayRequest);
 
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
+
     void apiCallDone(final JSONArray COUNTRYJson) {
         try {
             Log.d(Tag, COUNTRYJson.toString(2));
            // Log.i(Tag, COUNTRYJson.get("paths").toString() + COUNTRYJson.get("summary").toString());
+            System.out.println(COUNTRYJson);
             TextView Output = findViewById(R.id. Output);
             Output.setText(COUNTRYJson.get(0).toString());
 
         } catch (JSONException ignored) {
+            Log.d(Tag, "error");
         }
     }
-
 }

@@ -10,15 +10,16 @@ import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 
-public class InfoFinder {
+/*public class InfoFinder {
     public InfoFinder() {
     }
     public static int getDate(String json) {
         if (json != null) {
             JsonParser parser = new JsonParser();
-            JsonObject result = parser.parse(json).getAsJsonObject();
-            JsonObject paths = result.getAsJsonObject("paths");
-            JsonArray parameters = paths.getAsJsonArray("parameters");
+            JsonArray result = parser.parse(json).getAsJsonArray();
+            for (int i = 0; i < result.size(); i++) {
+                if result.get(i).getAsJsonObject().getAsJsonPrimitive()
+            }
             return parameters.get(1).getAsJsonObject().getAsJsonPrimitive("name").getAsInt();
         }
         return 0;
@@ -34,4 +35,4 @@ public class InfoFinder {
         return null;
     }
 
-}
+}*/
