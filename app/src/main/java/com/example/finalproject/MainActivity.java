@@ -12,6 +12,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONArray;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -36,7 +38,7 @@ public final class MainActivity extends AppCompatActivity {
             JsonParser parser = new JsonParser();
             JsonArray array = parser.parse(request).getAsJsonArray();
 
-            for(int i = 0; i < array.size(); i++) {
+            for (int i = 0; i < array.size(); i++) {
                 if (array.get(i).getAsJsonObject().getAsJsonPrimitive("countryCode").getAsString().equals(country)) {
                     String[] first = array.get(i).getAsJsonObject().getAsJsonPrimitive("date").getAsString().trim().split("-");
                     for (int j = 0; j < first.length; j++) {
@@ -70,12 +72,13 @@ public final class MainActivity extends AppCompatActivity {
         });
 
 
-
     }
+
     @Override
     protected void onPause() {
         super.onPause();
     }
+
     void StartAPICall(final String inputCode, final String inputDate) {
         try {
             JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
@@ -90,14 +93,13 @@ public final class MainActivity extends AppCompatActivity {
                             Log.i(Tag, request);
                         }
                     }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Log.e(Tag, error.toString());
-                        }
-                    });
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e(Tag, error.toString());
+                }
+            });
             jsonArrayRequest.setShouldCache(false);
             requestQueue.add(jsonArrayRequest);
-
 
 
         } catch (Exception e) {
@@ -106,16 +108,28 @@ public final class MainActivity extends AppCompatActivity {
 
     }
 
-    void apiCallDone(final JSONArray COUNTRYJson) {
-        try {
-            Log.d(Tag, COUNTRYJson.toString(2));
-           // Log.i(Tag, COUNTRYJson.get("paths").toString() + COUNTRYJson.get("summary").toString());
-            System.out.println(COUNTRYJson);
-            TextView Output = findViewById(R.id. Output);
-            Output.setText(COUNTRYJson.get(0).toString());
+    String[][] getInfo(final JSONArray inputArray) {
+        String[][] store = new String[inputArray.length()][2];
+        if (inputArray != null) {
+            for (int i = 0; i < inputArray.length(); i++) {
+                if (store[i][0] != null && store[i][1] != null) {
+                    try {
+                        store[i][0] = inputArray.getJSONObject(i).getString("name");
+                        store[i][1] = inputArray.getJSONObject(i).getString("date");
+                    } catch (Exception e) {
+                    }
+                }
+            }
+            return store;
+        }
+        return null;
+    }
 
-        } catch (JSONException ignored) {
-            Log.d(Tag, "error");
+    void apiCallDone(final JSONArray COUNTRYJson) {
+        TextView Output = findViewById(R.id.Output);
+        String[][] array = getInfo(COUNTRYJson);
+        for (int i = 0; i < COUNTRYJson.length(); i++) {
+            Output.setText(Output.getText() + "Holiday Name: " + array[i][0] + ", Date: " + array[i][1] + "\n");
         }
     }
 }
