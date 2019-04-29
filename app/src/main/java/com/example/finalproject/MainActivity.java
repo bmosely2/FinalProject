@@ -110,20 +110,18 @@ public final class MainActivity extends AppCompatActivity {
 
     String[][] getInfo(final JSONArray inputArray) {
         String[][] store = new String[inputArray.length()][2];
-        if (inputArray != null) {
-            for (int i = 0; i < inputArray.length(); i++) {
-                if (store[i][0] != null && store[i][1] != null) {
-                    try {
-                        store[i][0] = inputArray.getJSONObject(i).getString("name");
-                        store[i][1] = inputArray.getJSONObject(i).getString("date");
-                    } catch (Exception e) {
-                    }
-                }
+        for (int i = 0; i < inputArray.length(); i++) {
+            try {
+                store[i][0] = inputArray.getJSONObject(i).getString("name");
+                store[i][1] = inputArray.getJSONObject(i).getString("date");
+            } catch (Exception e) {
             }
-            return store;
         }
-        return null;
+        return store;
     }
+
+
+
 
     void apiCallDone(final JSONArray COUNTRYJson) {
         TextView Output = findViewById(R.id.Output);
