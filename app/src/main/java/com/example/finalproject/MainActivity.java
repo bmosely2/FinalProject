@@ -127,7 +127,7 @@ public final class MainActivity extends AppCompatActivity {
         TextView Output = findViewById(R.id.Output);
         String[][] array = getInfo(COUNTRYJson);
         for (int i = 0; i < COUNTRYJson.length(); i++) {
-            Output.setText(Output.getText() + "Holiday Name: " + array[i][0] + ", Date: " + array[i][1] + "\n");
+            Output.setText(Output.getText() + "Holiday Name: " + array[i][0] +  ", " + "\nDate: " + array[i][1] + "\n");
         }
     }
 }
